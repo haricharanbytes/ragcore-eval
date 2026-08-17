@@ -1,0 +1,28 @@
+# --- Environment / secrets ---
+.env
+.env.local
+*.env
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# --- Generated data (never commit vector DB / uploads / sqlite file) ---
+data/chroma/*
+data/uploads/*
+data/app.db
+!data/chroma/.gitkeep
+!backend/data/uploads/.gitkeep
+
+# --- Local HuggingFace model cache (see config.py HF_HOME) ---
+.hf_cache/
+
+# --- OS / editor ---
+.DS_Store
+.vscode/
+.idea/
