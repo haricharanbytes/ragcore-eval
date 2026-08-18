@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>docQuery — Ask your documents</title>
+  <meta name="description" content="Upload a document and ask questions about it. Every answer is traced back to the exact passage it came from." />
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+  <!-- ============ NAV ============ -->
+  <header class="nav">
+    <div class="nav__inner">
+      <span class="nav__logo">⌗ docQuery</span>
+      <a class="nav__link" href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="hero__inner">
+      <h1 class="hero__headline">
+        Ask your documents.<br />
+        Get answers with receipts.
+        <sup class="footnote-mark" data-footnote-target="footnote-1">[1]</sup>
+      </h1>
+      <p class="hero__subtext">
+        Upload a PDF, DOCX, or text file. Every answer traces back to the
+        exact passage it came from — no black box.
+      </p>
+      <a href="#app" class="btn btn--primary hero__cta">Try it →</a>
+
+      <div class="hero__footnote-rule"></div>
+      <p class="hero__footnote" id="footnote-1">
+        <span class="footnote-mark">[1]</span>
+        Every answer below cites the exact document, page, and passage it
+        was generated from — the same citation style you'll see once you
+        upload something.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ HOW IT WORKS (quiet, minimal) ============ -->
+  <section class="how-it-works">
+    <div class="how-it-works__inner">
+      <div class="step">
+        <span class="step__label">Upload</span>
+        <p class="step__text">Add a PDF, DOCX, or text file.</p>
+      </div>
+      <div class="step-divider">→</div>
+      <div class="step">
+        <span class="step__label">Ask</span>
+        <p class="step__text">Type a question about its content.</p>
+      </div>
+      <div class="step-divider">→</div>
+      <div class="step">
+        <span class="step__label">Get a cited answer</span>
+        <p class="step__text">See the exact source behind every answer.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ APP: upload (top) + chat (below) ============ -->
+  <main class="app" id="app">
+    <div class="app__inner">
+
+      <!-- Upload section -->
+      <section class="panel upload-panel" aria-labelledby="upload-heading">
+        <h2 id="upload-heading" class="panel__heading">Your documents</h2>
+
+        <div class="upload-zone" id="upload-zone" tabindex="0" role="button" aria-label="Upload a document">
+          <input type="file" id="file-input" accept=".pdf,.docx,.txt" hidden />
+          <p class="upload-zone__text">
+            <span class="upload-zone__cta">Click to upload</span> or drag a file here
+          </p>
+          <p class="upload-zone__hint">PDF, DOCX, or TXT — up to 20MB</p>
+          <p class="upload-zone__status" id="upload-status" hidden>
+            <span class="spinner" aria-hidden="true"></span>
+            <span id="upload-status-text">Uploading…</span>
+          </p>
+        </div>
+
+        <ul class="document-list" id="document-list" aria-live="polite">
+          <!-- Populated by app.js -->
+        </ul>
+      </section>
+
+      <!-- Chat section -->
+      <section class="panel chat-panel" aria-labelledby="chat-heading">
+        <h2 id="chat-heading" class="panel__heading">Ask a question</h2>
+
+        <div class="chat-messages" id="chat-messages" aria-live="polite">
+          <p class="chat-empty-state">
+            Upload a document, then ask a question about it.
+          </p>
+        </div>
+
+        <form class="chat-input-row" id="chat-form">
+          <input
+            type="text"
+            id="chat-input"
+            class="chat-input"
+            placeholder="Ask something about your documents…"
+            autocomplete="off"
+            required
+          />
+          <button type="submit" class="btn btn--primary chat-submit">Ask</button>
+        </form>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <p>Built with FastAPI, LangChain, HuggingFace embeddings, and Groq.</p>
+  </footer>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
