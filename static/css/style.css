@@ -84,13 +84,13 @@ input:focus-visible,
 
 .nav__logo {
   font-family: var(--font-mono);
-  font-weight: 500;
-  font-size: 15px;
+  font-weight: 1000;
+  font-size: 25px;
   letter-spacing: -0.02em;
 }
 
 .nav__link {
-  font-size: 14px;
+  font-size: 25px;
   color: var(--color-text-secondary);
   text-decoration: none;
 }
