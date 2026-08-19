@@ -60,18 +60,10 @@ class Settings(BaseSettings):
     # precisely; retrieval's job here is just "don't miss anything relevant."
     retrieval_candidate_k: int = Field(default=12, gt=0)
 
-    # Final number of chunks handed to the LLM after reranking.
+    # Final number of chunks handed to the LLM after reranking. Always
+    # exactly this many (when available) — no absolute score threshold
+    # filters chunks out; see reranker.py for why.
     rerank_top_n: int = Field(default=4, gt=0)
-
-    # Chunks scoring below this are dropped entirely, even if it means
-    # fewer than rerank_top_n survive (possibly zero, which correctly
-    # triggers the "couldn't find anything relevant" fallback instead of
-    # padding the context with weakly-related chunks from unrelated
-    # documents). cross-encoder/ms-marco-MiniLM-L-6-v2 outputs unbounded
-    # relevance logits, not 0-1 probabilities — scores around/above 0
-    # typically indicate genuine relevance, negative scores indicate the
-    # pair is likely unrelated. None disables the filter (old behavior).
-    rerank_min_score: float | None = Field(default=0.0)
 
     # Cross-encoder model for reranking. Runs locally via sentence-transformers
     # (already a dependency for embeddings) — no extra API/key needed.
