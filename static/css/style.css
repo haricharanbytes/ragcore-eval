@@ -1,9 +1,5 @@
 /* ==========================================================================
    Design tokens
-   System font stacks (not webfonts) — deliberate choice given network
-   constraints in dev; also means zero external requests in production.
-   Technical feel comes from the mono stack used on labels/badges/citations,
-   not from a specific display typeface.
    ========================================================================== */
 :root {
   --color-background: #f7f9f8;
@@ -57,7 +53,6 @@ button {
   font-family: inherit;
 }
 
-/* Visible keyboard focus everywhere — accessibility floor */
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
@@ -67,16 +62,86 @@ input:focus-visible,
 }
 
 /* ==========================================================================
+   Dark gradient section — wraps nav + hero, matches the reference design's
+   moody blurred-glow background. Overriding the color tokens on this
+   wrapper (rather than hardcoding colors on every child) means every
+   existing rule that reads var(--color-text-primary) etc. automatically
+   flips to the light-on-dark palette for anything nested inside it —
+   no need to duplicate styles.
+   ========================================================================== */
+.top-gradient-section {
+  position: relative;
+  overflow: hidden;
+  background: #0a1310;
+
+  /* Light-on-dark token overrides, scoped to this section only */
+  --color-text-primary: #f5f7f6;
+  --color-text-secondary: rgba(245, 247, 246, 0.68);
+  --color-border: rgba(245, 247, 246, 0.18);
+}
+
+/* Soft blurred glow orbs — layered, offset, low-opacity — approximating
+   the reference image's organic gradient rather than a flat CSS gradient,
+   which reads as much more "designed" than a plain linear-gradient. */
+.top-gradient-section::before,
+.top-gradient-section::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.top-gradient-section::before {
+  width: 560px;
+  height: 560px;
+  background: var(--color-accent-light);
+  opacity: 0.22;
+  top: -160px;
+  right: -80px;
+}
+
+.top-gradient-section::after {
+  width: 640px;
+  height: 640px;
+  background: var(--color-accent-deep);
+  opacity: 0.4;
+  top: 500px;
+  left: -200px;
+}
+
+/* Two more orbs further down the page, so the gradient feels continuous
+   rather than fading to flat black after the hero — positioned with
+   generous vertical spread since page height varies with content
+   (document list length, chat message count). */
+.top-gradient-section .app::before {
+  content: "";
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  filter: blur(100px);
+  background: var(--color-accent);
+  opacity: 0.18;
+  top: 0;
+  right: -220px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ==========================================================================
    Nav
    ========================================================================== */
 .nav {
-  border-bottom: 1px solid var(--color-border);
+  position: relative;
+  z-index: 1;
 }
 
 .nav__inner {
   max-width: 960px;
   margin: 0 auto;
-  padding: 18px var(--page-padding);
+  padding: 22px var(--page-padding);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -84,39 +149,62 @@ input:focus-visible,
 
 .nav__logo {
   font-family: var(--font-mono);
-  font-weight: 1000;
-  font-size: 25px;
+  font-weight: 800;
+  font-size: 19px;
   letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+}
+
+.nav__right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
 }
 
 .nav__link {
-  font-size: 25px;
+  font-size: 14px;
   color: var(--color-text-secondary);
   text-decoration: none;
 }
 
 .nav__link:hover {
-  color: var(--color-accent-deep);
+  color: var(--color-text-primary);
 }
 
 /* ==========================================================================
    Hero
    ========================================================================== */
 .hero {
-  padding: 88px var(--page-padding) 56px;
+  position: relative;
+  z-index: 1;
+  padding: 64px var(--page-padding) 88px;
 }
 
 .hero__inner {
   max-width: var(--content-width);
   margin: 0 auto;
+  text-align: left;
+}
+
+.hero__eyebrow {
+  font-style: italic;
+  font-size: 14px;
+  color: var(--color-accent-light);
+  margin-bottom: 18px;
 }
 
 .hero__headline {
-  font-size: clamp(32px, 5vw, 48px);
+  font-size: clamp(36px, 5.5vw, 56px);
   font-weight: 600;
   letter-spacing: -0.03em;
-  line-height: 1.15;
+  line-height: 1.12;
   color: var(--color-text-primary);
+}
+
+.hero__headline em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--color-accent-light);
 }
 
 .footnote-mark {
@@ -171,16 +259,18 @@ input:focus-visible,
   font-size: 15px;
   font-weight: 500;
   padding: 11px 22px;
-  border-radius: var(--radius-sm);
+  border-radius: 999px;
   border: none;
   cursor: pointer;
   text-decoration: none;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  display: inline-block;
 }
 
 .btn--primary {
   background: var(--color-accent);
-  color: var(--color-surface);
+  color: #ffffff;
+  border-radius: var(--radius-sm);
 }
 
 .btn--primary:hover {
@@ -193,13 +283,30 @@ input:focus-visible,
   cursor: not-allowed;
 }
 
+/* Pill-outline button — used in the dark nav, matches the reference's
+   "Sign up for free" style: transparent fill, light border, fills subtly
+   on hover. */
+.btn--pill-outline {
+  background: transparent;
+  border: 1px solid rgba(245, 247, 246, 0.35);
+  color: var(--color-text-primary);
+  padding: 9px 20px;
+  font-size: 13.5px;
+}
+
+.btn--pill-outline:hover {
+  background: rgba(245, 247, 246, 0.08);
+  border-color: rgba(245, 247, 246, 0.6);
+}
+
 /* ==========================================================================
    How it works
    ========================================================================== */
 .how-it-works {
-  border-top: 1px solid var(--color-border);
+  position: relative;
+  z-index: 1;
   border-bottom: 1px solid var(--color-border);
-  background: var(--color-surface);
+  background: transparent;
 }
 
 .how-it-works__inner {
@@ -239,10 +346,15 @@ input:focus-visible,
    App section (upload on top, chat below — single column)
    ========================================================================== */
 .app {
+  position: relative;
+  z-index: 1;
   padding: 56px var(--page-padding) 80px;
+  overflow: hidden;
 }
 
 .app__inner {
+  position: relative;
+  z-index: 1;
   max-width: var(--content-width);
   margin: 0 auto;
   display: flex;
@@ -251,16 +363,19 @@ input:focus-visible,
 }
 
 .panel {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: rgba(245, 247, 246, 0.06);
+  border: 1px solid rgba(245, 247, 246, 0.14);
   border-radius: var(--radius-md);
   padding: 24px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .panel__heading {
   font-size: 15px;
   font-weight: 600;
   margin-bottom: 16px;
+  color: var(--color-text-primary);
 }
 
 /* --- Upload zone --- */
@@ -275,8 +390,8 @@ input:focus-visible,
 
 .upload-zone:hover,
 .upload-zone--dragover {
-  border-color: var(--color-accent);
-  background: color-mix(in srgb, var(--color-accent-light) 12%, transparent);
+  border-color: var(--color-accent-light);
+  background: rgba(111, 207, 151, 0.08);
 }
 
 .upload-zone__text {
@@ -285,7 +400,7 @@ input:focus-visible,
 }
 
 .upload-zone__cta {
-  color: var(--color-accent-deep);
+  color: var(--color-accent-light);
   font-weight: 500;
 }
 
@@ -299,8 +414,8 @@ input:focus-visible,
 /* --- Uploading state --- */
 .upload-zone--uploading {
   pointer-events: none;
-  border-color: var(--color-accent);
-  background: color-mix(in srgb, var(--color-accent-light) 12%, transparent);
+  border-color: var(--color-accent-light);
+  background: rgba(111, 207, 151, 0.08);
 }
 
 .upload-zone--uploading .upload-zone__text,
@@ -314,7 +429,7 @@ input:focus-visible,
   justify-content: center;
   gap: 10px;
   font-size: 14px;
-  color: var(--color-accent-deep);
+  color: var(--color-accent-light);
 }
 
 .upload-zone--uploading .upload-zone__status {
@@ -356,6 +471,7 @@ input:focus-visible,
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   font-size: 13px;
+  background: rgba(245, 247, 246, 0.03);
 }
 
 .document-item__name {
@@ -364,6 +480,7 @@ input:focus-visible,
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: var(--color-text-primary);
 }
 
 .document-item__status {
@@ -376,18 +493,18 @@ input:focus-visible,
 
 .status--pending,
 .status--processing {
-  background: #eef2f1;
+  background: rgba(245, 247, 246, 0.12);
   color: var(--color-text-secondary);
 }
 
 .status--completed {
-  background: var(--color-accent-light);
-  color: var(--color-accent-deep);
+  background: rgba(111, 207, 151, 0.2);
+  color: var(--color-accent-light);
 }
 
 .status--failed {
-  background: #fbe4e0;
-  color: #b3402f;
+  background: rgba(211, 91, 71, 0.2);
+  color: #ff8b74;
 }
 
 .document-item__delete {
@@ -430,13 +547,14 @@ input:focus-visible,
 .chat-message--user {
   align-self: flex-end;
   background: var(--color-accent);
-  color: var(--color-surface);
+  color: #ffffff;
 }
 
 .chat-message--assistant {
   align-self: flex-start;
-  background: var(--color-background);
+  background: rgba(245, 247, 246, 0.05);
   border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
 }
 
 .chat-message__sources {
@@ -449,8 +567,8 @@ input:focus-visible,
 .source-tag {
   font-family: var(--font-mono);
   font-size: 11.5px;
-  color: var(--color-accent-deep);
-  background: var(--color-accent-light);
+  color: var(--color-accent-light);
+  background: rgba(111, 207, 151, 0.15);
   padding: 4px 8px;
   border-radius: var(--radius-sm);
   display: inline-block;
@@ -473,8 +591,8 @@ input:focus-visible,
 }
 
 .eval-button:hover:not(:disabled) {
-  border-color: var(--color-accent);
-  color: var(--color-accent-deep);
+  border-color: var(--color-accent-light);
+  color: var(--color-accent-light);
 }
 
 .eval-button:disabled {
@@ -486,8 +604,8 @@ input:focus-visible,
   display: inline-block;
   font-family: var(--font-mono);
   font-size: 11.5px;
-  color: var(--color-accent-deep);
-  background: var(--color-accent-light);
+  color: var(--color-accent-light);
+  background: rgba(111, 207, 151, 0.15);
   padding: 4px 10px;
   border-radius: var(--radius-sm);
 }
@@ -505,16 +623,24 @@ input:focus-visible,
   border-radius: var(--radius-sm);
   font-size: 14px;
   font-family: var(--font-body);
+  background: rgba(245, 247, 246, 0.05);
+  color: var(--color-text-primary);
+}
+
+.chat-input::placeholder {
+  color: var(--color-text-secondary);
 }
 
 .chat-input:focus {
-  border-color: var(--color-accent);
+  border-color: var(--color-accent-light);
 }
 
 /* ==========================================================================
    Footer
    ========================================================================== */
 .footer {
+  position: relative;
+  z-index: 1;
   border-top: 1px solid var(--color-border);
   padding: 24px var(--page-padding);
   text-align: center;
@@ -529,8 +655,16 @@ input:focus-visible,
    Responsive
    ========================================================================== */
 @media (max-width: 640px) {
+  .nav__right {
+    gap: 14px;
+  }
+
+  .nav__link {
+    display: none;
+  }
+
   .hero {
-    padding: 56px var(--page-padding) 40px;
+    padding: 48px var(--page-padding) 56px;
   }
 
   .how-it-works__inner {
@@ -558,4 +692,8 @@ input:focus-visible,
     animation: none !important;
     border-top-color: var(--color-border);
   }
+}
+
+body {
+    background: red !important;
 }
