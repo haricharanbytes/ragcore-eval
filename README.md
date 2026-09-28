@@ -2,10 +2,17 @@
 
 A production-oriented Retrieval-Augmented Generation (RAG) web application. Upload a document, ask questions about it, and get answers grounded in the source text — with citations, hybrid retrieval, reranking, and on-demand answer quality scoring.
 
-Built as a portfolio project to demonstrate a complete, real-world RAG pipeline — not just a naive "embed and retrieve" demo.
-
-
 ---
+### Run
+
+From the repo root:
+
+```bash
+source venv/bin/activate
+python3 -m app.main
+```
+
+Then open **http://localhost:8000**.
 
 ## Features
 
@@ -55,7 +62,7 @@ flowchart TD
 - BM25 index is rebuilt per-query from Chroma's stored chunks rather than maintained as a separate persistent index — simple and fast at portfolio scale; the natural next step if this needed to scale further.
 - Query rewriting uses a smaller/faster Groq model than answer generation, since reformulating a question doesn't need the same reasoning power.
 - Reranking runs against the *original* question, not the rewritten one — the rewrite is a retrieval aid, but final relevance should reflect what the user actually asked.
-- Chunks scoring below a relevance floor after reranking are dropped entirely, even if it means answering "I couldn't find anything relevant" instead of padding the context with weak matches.
+- No absolute score threshold is applied after reranking, because cross-encoder scores are uncalibrated logits and a fixed cutoff has no principled meaning. Instead, the LLM returns a structured `found_in_context` flag, and sources are shown only when the answer was actually grounded in the retrieved context.
 
 ---
 
