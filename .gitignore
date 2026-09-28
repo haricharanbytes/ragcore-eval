@@ -16,6 +16,7 @@ venv/
 data/chroma/*
 data/uploads/*
 data/app.db
+notebook/chroma_demo/
 !data/chroma/.gitkeep
 !backend/data/uploads/.gitkeep
 
