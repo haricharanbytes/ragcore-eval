@@ -50,7 +50,7 @@ def rerank(
     top_results = scored[:n]
 
     # Deliberately NOT filtering by an absolute score threshold here.
-    # Cross-encoder scores are raw, uncalibrated logits from a binary
+    # Cross-encoder scores are raw, uncalibrated logits from a binary 
     # classifier trained on a different dataset (MS MARCO) — there's no
     # principled reason a fixed cutoff like 0.0 means "irrelevant" for
     # OUR documents. A "negative" score can still be the most useful
